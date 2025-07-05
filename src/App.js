@@ -281,6 +281,7 @@ const HomePage = ({ navigateToBookDetails }) => {
       title: 'The Art of Electronics',
       description: 'Master the fundamentals and advanced concepts of electronics design.',
       // IMPORTANT: Using process.env.PUBLIC_URL for correct path resolution on GitHub Pages
+      // The image path is based on your public/images folder structure.
       imageUrl: process.env.PUBLIC_URL + '/images/WhatsApp Image 2025-07-05 at 00.05.17_13b7a3b3.jpg',
       isWorking: true,
     },
@@ -469,6 +470,9 @@ const BookDetailsPage = ({ book, navigateToHome }) => {
 
   // Handle audio playback
   const handlePlayAudio = (topic) => {
+    // Log the audio URL to the console for debugging
+    console.log("Attempting to play audio from:", topic.audio);
+
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
@@ -476,7 +480,11 @@ const BookDetailsPage = ({ book, navigateToHome }) => {
     setActiveTopic(topic.id);
     audioRef.current = new Audio(topic.audio);
     audioRef.current.playbackRate = playbackSpeed; // Apply current speed
-    audioRef.current.play();
+    audioRef.current.play()
+      .catch(error => {
+        console.error("Error playing audio:", error);
+        // You can add a user-facing message here if needed
+      });
     setIsPlaying(true);
 
     audioRef.current.onended = () => {
