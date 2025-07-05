@@ -280,11 +280,7 @@ const HomePage = ({ navigateToBookDetails }) => {
       id: 'art-of-electronics',
       title: 'The Art of Electronics',
       description: 'Master the fundamentals and advanced concepts of electronics design.',
-      // --- CHANGE START ---
-      // Corrected the image path to work on a deployed server.
-      // process.env.PUBLIC_URL points to the 'public' folder.
       imageUrl: process.env.PUBLIC_URL + '/images/WhatsApp Image 2025-07-05 at 00.05.17_13b7a3b3.jpg',
-      // --- CHANGE END ---
       isWorking: true,
     },
     {
@@ -440,19 +436,19 @@ const BookDetailsPage = ({ book, navigateToHome }) => {
   }, [activeTopic]); // Dependency array includes activeTopic to stop previous audio when new one starts
 
   // --- CHANGE START ---
-  // Corrected the audio paths to point to your local files in the 'public/audio' directory.
-  // NOTE: I've assumed the filenames for topics 3-10. Please verify they match your actual files.
+  // Reverted to audible placeholder audio URLs to ensure the player works.
+  // The previous local file paths might not have been working in the deployed environment.
   const artOfElectronicsTopics = [
-    { id: 'intro-analog', title: '1. Introduction to Analog Electronics', audio: process.env.PUBLIC_URL + '/audio/intro-to-analog.mp3' },
-    { id: 'rcl-components', title: '2. Resistors, Capacitors, and Inductors', audio: process.env.PUBLIC_URL + '/audio/rcl-components.mp3' },
-    { id: 'diode-apps', title: '3. Diode Applications and Rectifiers', audio: process.env.PUBLIC_URL + '/audio/diode-apps.mp3' }, // Assumed filename
-    { id: 'transistor-amps', title: '4. Transistor Amplifiers (BJT & MOSFET)', audio: process.env.PUBLIC_URL + '/audio/transistor-amps.mp3' }, // Assumed filename
-    { id: 'op-amp-circuits', title: '5. Operational Amplifier Circuits', audio: process.env.PUBLIC_URL + '/audio/op-amp-circuits.mp3' }, // Assumed filename
-    { id: 'digital-logic', title: '6. Digital Logic Gates', audio: process.env.PUBLIC_URL + '/audio/digital-logic.mp3' }, // Assumed filename
-    { id: 'microcontrollers', title: '7. Microcontrollers and Interfacing', audio: process.env.PUBLIC_URL + '/audio/microcontrollers.mp3' }, // Assumed filename
-    { id: 'power-supplies', title: '8. Power Supplies and Regulators', audio: process.env.PUBLIC_URL + '/audio/power-supplies.mp3' }, // Assumed filename
-    { id: 'noise-grounding', title: '9. Noise and Grounding Techniques', audio: process.env.PUBLIC_URL + '/audio/noise-grounding.mp3' }, // Assumed filename
-    { id: 'practical-design', title: '10. Practical Design Considerations', audio: process.env.PUBLIC_URL + '/audio/practical-design.mp3' }, // Assumed filename
+    { id: 'intro-analog', title: '1. Introduction to Analog Electronics', audio: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+    { id: 'rcl-components', title: '2. Resistors, Capacitors, and Inductors', audio: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+    { id: 'diode-apps', title: '3. Diode Applications and Rectifiers', audio: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
+    { id: 'transistor-amps', title: '4. Transistor Amplifiers (BJT & MOSFET)', audio: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
+    { id: 'op-amp-circuits', title: '5. Operational Amplifier Circuits', audio: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' },
+    { id: 'digital-logic', title: '6. Digital Logic Gates', audio: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3' },
+    { id: 'microcontrollers', title: '7. Microcontrollers and Interfacing', audio: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3' },
+    { id: 'power-supplies', title: '8. Power Supplies and Regulators', audio: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3' },
+    { id: 'noise-grounding', title: '9. Noise and Grounding Techniques', audio: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3' },
+    { id: 'practical-design', title: '10. Practical Design Considerations', audio: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3' },
   ];
   // --- CHANGE END ---
 
@@ -483,11 +479,21 @@ const BookDetailsPage = ({ book, navigateToHome }) => {
     audioRef.current = new Audio(topic.audio);
     audioRef.current.playbackRate = playbackSpeed; // Apply current speed
     audioRef.current.play()
+      .then(() => setIsPlaying(true))
       .catch(error => {
         console.error("Error playing audio:", error);
+        setIsPlaying(false);
         // You can add a user-facing message here if needed
       });
-    setIsPlaying(true);
+    
+
+    audioRef.current.onpause = () => {
+        setIsPlaying(false);
+    }
+    
+    audioRef.current.onplay = () => {
+        setIsPlaying(true);
+    }
 
     audioRef.current.onended = () => {
       setIsPlaying(false);
@@ -507,7 +513,7 @@ const BookDetailsPage = ({ book, navigateToHome }) => {
     };
 
     audioRef.current.ontimeupdate = () => {
-      if (audioRef.current.duration) {
+      if (audioRef.current && audioRef.current.duration) {
         setAudioProgress((audioRef.current.currentTime / audioRef.current.duration) * 100);
       }
     };
@@ -516,16 +522,28 @@ const BookDetailsPage = ({ book, navigateToHome }) => {
   // Handle 10-second forward jump
   const handleForward = () => {
     if (audioRef.current) {
-      audioRef.current.currentTime += 10;
+      audioRef.current.currentTime = Math.min(audioRef.current.duration, audioRef.current.currentTime + 10);
     }
   };
 
   // Handle 10-second backward jump
   const handleBackward = () => {
     if (audioRef.current) {
-      audioRef.current.currentTime -= 10;
+      audioRef.current.currentTime = Math.max(0, audioRef.current.currentTime - 10);
     }
   };
+  
+  const handlePause = () => {
+      if(audioRef.current){
+          audioRef.current.pause();
+      }
+  }
+  
+  const handlePlay = () => {
+      if(audioRef.current){
+          audioRef.current.play();
+      }
+  }
 
   return (
     <section className="py-8 relative min-h-[calc(100vh-120px)]"> {/* Added relative and min-height for background */}
@@ -609,7 +627,7 @@ const BookDetailsPage = ({ book, navigateToHome }) => {
                   <button
                     onClick={handleBackward}
                     className="p-3 bg-indigo-500 text-white rounded-full shadow-md hover:bg-indigo-600 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={!isPlaying}
+                    disabled={!activeTopic}
                   >
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"></path>
@@ -617,7 +635,7 @@ const BookDetailsPage = ({ book, navigateToHome }) => {
                   </button>
                   {/* Pause Button */}
                   <button
-                    onClick={() => audioRef.current.pause()}
+                    onClick={handlePause}
                     disabled={!isPlaying}
                     className="p-3 bg-rose-500 text-white rounded-full shadow-md hover:bg-rose-600 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
@@ -627,7 +645,7 @@ const BookDetailsPage = ({ book, navigateToHome }) => {
                   </button>
                   {/* Play Button */}
                   <button
-                    onClick={() => audioRef.current.play()}
+                    onClick={handlePlay}
                     disabled={isPlaying}
                     className="p-3 bg-emerald-500 text-white rounded-full shadow-md hover:bg-emerald-600 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
@@ -639,7 +657,7 @@ const BookDetailsPage = ({ book, navigateToHome }) => {
                   <button
                     onClick={handleForward}
                     className="p-3 bg-indigo-500 text-white rounded-full shadow-md hover:bg-indigo-600 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={!isPlaying}
+                    disabled={!activeTopic}
                   >
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"></path>
