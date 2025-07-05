@@ -280,10 +280,8 @@ const HomePage = ({ navigateToBookDetails }) => {
       id: 'art-of-electronics',
       title: 'The Art of Electronics',
       description: 'Master the fundamentals and advanced concepts of electronics design.',
-      // IMPORTANT: Reverted to 'uploaded:' ID for Canvas compatibility.
-      // For external deployment (e.g., GitHub Pages), you would typically use
-      // process.env.PUBLIC_URL + '/images/WhatsApp Image 2025-07-05 at 00.05.17_13b7a3b3.jpg'
-      imageUrl: 'uploaded:WhatsApp Image 2025-07-05 at 00.05.17_13b7a3b3.jpg-25b7fe4f-ff92-4de9-9e6d-4a6e9a52f819',
+      // IMPORTANT: Using process.env.PUBLIC_URL for correct path resolution on GitHub Pages
+      imageUrl: process.env.PUBLIC_URL + '/images/WhatsApp Image 2025-07-05 at 00.05.17_13b7a3b3.jpg',
       isWorking: true,
     },
     {
@@ -378,7 +376,8 @@ const HomePage = ({ navigateToBookDetails }) => {
                   className="w-24 h-24 rounded-lg object-cover shadow-md"
                   onError={(e) => {
                     e.target.onerror = null; // Prevents infinite loop
-                    e.target.src = "https://placehold.co/96x96/E0E7FF/4F46E5?text=AoE"; // Fallback to placeholder
+                    // Fallback to a placeholder if the image fails to load
+                    e.target.src = "https://placehold.co/96x96/E0E7FF/4F46E5?text=AoE";
                   }}
                 />
               ) : (
@@ -439,20 +438,19 @@ const BookDetailsPage = ({ book, navigateToHome }) => {
 
   // Define more specific topics for "The Art of Electronics"
   const artOfElectronicsTopics = [
-    // IMPORTANT: To add your own audio files, you MUST replace these URLs with the 'uploaded:' IDs
-    // of your audio files after you upload them to the Canvas.
-    // Example: { id: 'intro-analog', title: '1. Introduction to Analog Electronics', audio: 'uploaded:your_audio_file_id_here.mp3-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' },
-    // If you have not uploaded audio files, these are placeholder URLs.
-    { id: 'intro-analog', title: '1. Introduction to Analog Electronics', audio: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-    { id: 'rcl-components', title: '2. Resistors, Capacitors, and Inductors', audio: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-    { id: 'diode-apps', title: '3. Diode Applications and Rectifiers', audio: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-    { id: 'transistor-amps', title: '4. Transistor Amplifiers (BJT & MOSFET)', audio: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
-    { id: 'op-amp-circuits', title: '5. Operational Amplifier Circuits', audio: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' },
-    { id: 'digital-logic', title: '6. Digital Logic Gates', audio: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3' },
-    { id: 'microcontrollers', title: '7. Microcontrollers and Interfacing', audio: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3' },
-    { id: 'power-supplies', title: '8. Power Supplies and Regulators', audio: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3' },
-    { id: 'noise-grounding', title: '9. Noise and Grounding Techniques', audio: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3' },
-    { id: 'practical-design', title: '10. Practical Design Considerations', audio: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3' },
+    // IMPORTANT: Replace these URLs with the correct paths to your audio files.
+    // They should be in your 'public/audio' folder.
+    // Example: process.env.PUBLIC_URL + '/audio/your_audio_file_name.mp3'
+    { id: 'intro-analog', title: '1. Introduction to Analog Electronics', audio: process.env.PUBLIC_URL + '/audio/intro-to-analog.mp3' },
+    { id: 'rcl-components', title: '2. Resistors, Capacitors, and Inductors', audio: process.env.PUBLIC_URL + '/audio/rcl-components.mp3' },
+    { id: 'diode-apps', title: '3. Diode Applications and Rectifiers', audio: process.env.PUBLIC_URL + '/audio/diode-apps.mp3' }, // Placeholder, replace with your audio
+    { id: 'transistor-amps', title: '4. Transistor Amplifiers (BJT & MOSFET)', audio: process.env.PUBLIC_URL + '/audio/transistor-amps.mp3' }, // Placeholder, replace with your audio
+    { id: 'op-amp-circuits', title: '5. Operational Amplifier Circuits', audio: process.env.PUBLIC_URL + '/audio/op-amp-circuits.mp3' }, // Placeholder, replace with your audio
+    { id: 'digital-logic', title: '6. Digital Logic Gates', audio: process.env.PUBLIC_URL + '/audio/digital-logic.mp3' }, // Placeholder, replace with your audio
+    { id: 'microcontrollers', title: '7. Microcontrollers and Interfacing', audio: process.env.PUBLIC_URL + '/audio/microcontrollers.mp3' }, // Placeholder, replace with your audio
+    { id: 'power-supplies', title: '8. Power Supplies and Regulators', audio: process.env.PUBLIC_URL + '/audio/power-supplies.mp3' }, // Placeholder, replace with your audio
+    { id: 'noise-grounding', title: '9. Noise and Grounding Techniques', audio: process.env.PUBLIC_URL + '/audio/noise-grounding.mp3' }, // Placeholder, replace with your audio
+    { id: 'practical-design', title: '10. Practical Design Considerations', audio: process.env.PUBLIC_URL + '/audio/practical-design.mp3' }, // Placeholder, replace with your audio
   ];
 
   // Initialize unlocked topics (only the first one is unlocked initially)
