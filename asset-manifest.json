@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/ullas9525/EduTech/static/css/main.e6c13ad2.css",
+    "main.js": "/ullas9525/EduTech/static/js/main.77a1fe7c.js",
+    "static/js/453.5fb2003b.chunk.js": "/ullas9525/EduTech/static/js/453.5fb2003b.chunk.js",
+    "index.html": "/ullas9525/EduTech/index.html",
+    "main.e6c13ad2.css.map": "/ullas9525/EduTech/static/css/main.e6c13ad2.css.map",
+    "main.77a1fe7c.js.map": "/ullas9525/EduTech/static/js/main.77a1fe7c.js.map",
+    "453.5fb2003b.chunk.js.map": "/ullas9525/EduTech/static/js/453.5fb2003b.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.77a1fe7c.js"
+  ]
+}
